@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "chika-climate/proto"
+	pb "chika-climate/proto/micro-service-proto"
 	"context"
 	"log"
 	"net"
@@ -16,7 +16,6 @@ type temperatureByYearServer struct {
 var port = ":5000"
 
 func (s *temperatureByYearServer) GetTemperatureByYear(ctx context.Context, year *pb.Year) (*pb.Temperature, error) {
-	log.Println(&pb.Temperature{Value: temperatureByYear[year.Value]})
 	return &pb.Temperature{Value: temperatureByYear[year.Value]}, nil
 }
 
@@ -26,7 +25,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	log.Println("here")
+
 	pb.RegisterClimateDataServiceServer(grpcServer, &temperatureByYearServer{})
 	if err := grpcServer.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)
