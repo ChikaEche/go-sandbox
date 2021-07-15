@@ -18,6 +18,7 @@ func getTemperatureByYear(client pb.ClimateDataServiceClient, year *pb.Year) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	temperature, err := client.GetTemperatureByYear(ctx, year)
+	//log.Println(year)
 	if err != nil {
 		log.Fatalf("GetTemperature fails", err)
 	}
@@ -31,5 +32,5 @@ func main() {
 	}
 	defer conn.Close()
 	c := pb.NewClimateDataServiceClient(conn)
-	getTemperatureByYear(c, &pb.Year{Value: 34})
+	getTemperatureByYear(c, &pb.Year{Value: 1990})
 }
