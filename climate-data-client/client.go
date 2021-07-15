@@ -6,7 +6,6 @@ import (
 	"net"
 	"time"
 
-	apiPb "chika-climate/proto/api-client-proto"
 	pb "chika-climate/proto/micro-service-proto"
 
 	"google.golang.org/grpc"
@@ -17,11 +16,11 @@ const (
 	port    = ":8000"
 )
 
-type temperatureServer struct {
-	apiPb.UnimplementedApiProtoServer
+type temperatureByYearServer struct {
+	pb.UnimplementedClimateDataServiceServer
 }
 
-func getTemperatureByYear(client pb.ClimateDataServiceClient, year *pb.Year) (*apiPb.Temp, error) {
+func getTemperatureByYear(client pb.ClimateDataServiceClient, year *pb.Year) (*pb.Temperature, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	temperature, err := client.GetTemperatureByYear(ctx, year)
@@ -29,7 +28,7 @@ func getTemperatureByYear(client pb.ClimateDataServiceClient, year *pb.Year) (*a
 	if err != nil {
 		log.Fatalf("GetTemperature fails", err)
 	}
-	return &apiPb.Temp{Value: temperature.Value}, nil
+	return &pb.Temperature{Value: temperature.Value}, nil
 }
 
 func main() {
@@ -42,14 +41,14 @@ func main() {
 
 	server := grpc.NewServer()
 
-	apiPb.RegisterApiProtoServer(server, &temperatureServer{})
+	pb.RegisterClimateDataServiceServer(server, &temperatureByYearServer{})
 
 	if err := server.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
 
-func (s *temperatureServer) GetTemperature(ctx context.Context, year *apiPb.Yr) (*apiPb.Temp, error) {
+func (s *temperatureByYearServer) GetTemperatureByYear(ctx context.Context, year *pb.Year) (*pb.Temperature, error) {
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect")

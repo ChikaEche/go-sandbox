@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	apiPb "chika-climate/proto/api-client-proto"
+	pb "chika-climate/proto/micro-service-proto"
 
 	"google.golang.org/grpc"
 )
@@ -24,13 +24,13 @@ func getTemperatureByYear(w http.ResponseWriter, req *http.Request) {
 		log.Fatalf("did not connect")
 	}
 	defer conn.Close()
-	client := apiPb.NewApiProtoClient(conn)
+	client := pb.NewClimateDataServiceClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if intErr != nil {
 		panic(intErr)
 	}
-	temperature, err := client.GetTemperature(ctx, &apiPb.Yr{Value: int32(year)})
+	temperature, err := client.GetTemperatureByYear(ctx, &pb.Year{Value: int32(year)})
 	if err != nil {
 		log.Fatalf("GetTemperature fails", err)
 	}
