@@ -12,5 +12,5 @@ message Year {
 }
 
 message Temperature {
-  int32 value = 1;
+  double value = 1;
 }

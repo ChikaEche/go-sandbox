@@ -97,5 +97,5 @@ var ClimateDataService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc-service/climate-data-service.proto",
+	Metadata: "proto/micro-service-proto/climate-data-service.proto",
 }

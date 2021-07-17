@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"time"
@@ -32,6 +33,7 @@ func getTemperatureByYear(client pb.ClimateDataServiceClient, year *pb.Year) (*p
 }
 
 func main() {
+	fmt.Println("yoooo")
 
 	listen, err := net.Listen("tcp", port)
 
@@ -55,5 +57,5 @@ func (s *temperatureByYearServer) GetTemperatureByYear(ctx context.Context, year
 	}
 	defer conn.Close()
 	c := pb.NewClimateDataServiceClient(conn)
-	return getTemperatureByYear(c, &pb.Year{Value: year.Value})
+	return getTemperatureByYear(c, year)
 }
